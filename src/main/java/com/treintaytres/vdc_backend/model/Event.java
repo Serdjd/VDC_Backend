@@ -20,7 +20,7 @@ public class Event {
 
     @Lob
     @Column(name = "type", nullable = false)
-    private String type;
+    private Integer type;
 
     @Lob
     @Column(name = "title", nullable = false)
@@ -41,9 +41,21 @@ public class Event {
     @OneToMany(mappedBy = "idEvent")
     private Set<UserEvent> userEvents = new LinkedHashSet<>();
 
+    @ColumnDefault("0")
+    @Column(name = "roll_call_maked", nullable = false)
+    private Boolean rollCallMaked = false;
+
+    public Boolean getRollCallMaked() {
+        return rollCallMaked;
+    }
+
+    public void setRollCallMaked(Boolean rollCallMaked) {
+        this.rollCallMaked = rollCallMaked;
+    }
+
 
     public Event() {}
-    public Event(String type, String title, String comments, String location) {
+    public Event(Integer type, String title, String comments, String location) {
         this.type = type;
         this.title = title;
         this.comments = comments;
@@ -63,11 +75,11 @@ public class Event {
         this.id = id;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

@@ -1,7 +1,9 @@
 package com.treintaytres.vdc_backend.controller;
 
-import com.treintaytres.vdc_backend.model.Event;
+import com.treintaytres.vdc_backend.mapper.EventMapper;
+import com.treintaytres.vdc_backend.model.EventWithAttendance;
 import com.treintaytres.vdc_backend.model.request.CreateEventRequest;
+import com.treintaytres.vdc_backend.response.event.EventResponse;
 import com.treintaytres.vdc_backend.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,22 +14,25 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
 
+    private final EventMapper eventMapper;
     private EventService eventService;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, EventMapper eventMapper) {
         this.eventService = eventService;
+        this.eventMapper = eventMapper;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Event>> getFutureEvents(@RequestParam String filter) {
-        List<Event> events = switch (filter) {
-            case "future" -> eventService.getFutureEvents();
-            case "past" -> eventService.getPastEvents();
-            case "current" -> eventService.getCurrentEvents();
-            default -> eventService.getAllEvents();
+    @GetMapping("/{id}/all")
+    public ResponseEntity<List<EventResponse>> getFutureEvents(@RequestParam String filter, @PathVariable int id) {
+        List<EventWithAttendance> events = switch (filter) {
+            case "future" -> eventService.getFutureEvents(id);
+            case "past" -> eventService.getPastEvents(id);
+            case "current" -> eventService.getCurrentEvents(id);
+            default -> eventService.getAllEvents(id);
         };
         if (events == null || events.isEmpty())  return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(events);
+
+        return ResponseEntity.ok(eventMapper.toEvents(events));
     }
 
     @PostMapping

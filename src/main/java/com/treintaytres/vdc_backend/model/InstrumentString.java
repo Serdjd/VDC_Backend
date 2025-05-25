@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "STRING")
-public class String {
+public class InstrumentString {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
@@ -15,8 +15,20 @@ public class String {
     @Column(name = "name", nullable = false, length = 100)
     private java.lang.String name;
 
-    @OneToMany(mappedBy = "string")
+    @OneToMany(mappedBy = "instrumentString")
     private Set<Instrument> instruments = new LinkedHashSet<>();
+
+    @Lob
+    @Column(name = "url")
+    private java.lang.String url;
+
+    public java.lang.String getUrl() {
+        return url;
+    }
+
+    public void setUrl(java.lang.String url) {
+        this.url = url;
+    }
 
     public Integer getId() {
         return id;
