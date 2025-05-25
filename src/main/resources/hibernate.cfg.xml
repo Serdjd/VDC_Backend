@@ -1,6 +1,6 @@
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.url">jdbc:mariadb://192.168.0.253:3306/ad_practica1</property>
+        <property name="hibernate.connection.url">jdbc:mariadb://192.168.0.253:3306/VDC</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">admin</property>
         <property name="show_sql">true</property>

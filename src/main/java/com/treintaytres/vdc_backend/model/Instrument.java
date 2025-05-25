@@ -17,17 +17,29 @@ public class Instrument {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "string", nullable = false, referencedColumnName = "name")
-    private com.treintaytres.vdc_backend.model.String string;
+    @JoinColumn(name = "string", nullable = false, referencedColumnName = "id")
+    private InstrumentString instrumentString;
 
     @OneToMany(mappedBy = "primaryInstrument")
     private Set<User> users_primary = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "USER_INSTRUMENT",
-            joinColumns = @JoinColumn(name = "instrument_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+            joinColumns = @JoinColumn(name = "id_instrument"),
+            inverseJoinColumns = @JoinColumn(name = "id_user"))
     private Set<User> users = new LinkedHashSet<>();
+
+    @Lob
+    @Column(name = "url")
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public Integer getId() {
         return id;
@@ -45,12 +57,12 @@ public class Instrument {
         this.name = name;
     }
 
-    public com.treintaytres.vdc_backend.model.String getString() {
-        return string;
+    public InstrumentString getInstrumentString() {
+        return instrumentString;
     }
 
-    public void setString(com.treintaytres.vdc_backend.model.String string) {
-        this.string = string;
+    public void setInstrumentString(InstrumentString instrumentString) {
+        this.instrumentString = instrumentString;
     }
 
     public Set<User> getUsers_primary() {

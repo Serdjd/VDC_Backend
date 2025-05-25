@@ -3,6 +3,8 @@ package com.treintaytres.vdc_backend.dao;
 import com.treintaytres.vdc_backend.Connection;
 import com.treintaytres.vdc_backend.model.Instrument;
 import com.treintaytres.vdc_backend.model.User;
+import com.treintaytres.vdc_backend.model.UserWithString;
+import com.treintaytres.vdc_backend.utils.Constants;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -12,12 +14,32 @@ import java.util.List;
 
 public class UserDao {
 
-    public static void add(
-        String username,
-        String email,
-        int primaryInstrumentId,
-        Instrument[] instrumentIds,
-        String profileImagePath
+    public static int add(
+        String email
+    ) {
+        Session session = Connection.getSession();
+        Transaction tx = session.beginTransaction();
+        try {
+
+            User user = new User();
+            user.setEmail(email);
+            session.persist(user);
+            int id = user.getId();
+            tx.commit();
+            return id;
+        } catch (Exception e) {
+            tx.rollback();
+            System.err.println(e.getMessage());
+            return -1;
+        }
+    }
+
+    public static boolean update(
+            int id,
+            String username,
+            int primaryInstrumentId,
+            List<Integer> instrumentIds,
+            String profileImagePath
     ) {
         Session session = Connection.getSession();
         Transaction tx = session.beginTransaction();
@@ -27,21 +49,23 @@ public class UserDao {
                     .setParameter("ids",instrumentIds)
                     .getResultList();
 
-            User user = new User(
-                username,
-                email,
-                profileImagePath,
-                session.get(Instrument.class,primaryInstrumentId),
-               new HashSet<>(instruments)
-            );
+            User user = session.get(User.class,id);
+            user.setUsername(username);
+            user.setProfileImageUrl(profileImagePath);
+            user.setRol(0);
+            user.setPerteneceJunta(false);
+            user.setPrimaryInstrument(session.get(Instrument.class,primaryInstrumentId));
+            user.setInstruments(new HashSet<>(instruments));
 
-            session.persist(user);
             tx.commit();
+            return true;
         } catch (Exception e) {
             tx.rollback();
             System.err.println(e.getMessage());
+            return false;
         }
     }
+
 
     public static void updatePermissions(
             int id,
@@ -87,6 +111,13 @@ public class UserDao {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    public static Boolean isAdmin(int id) {
+        Session session = Connection.getSession();
+        User user = session.get(User.class,id);
+        if (user == null) return null;
+        return user.getRol() == Constants.ADMIN;
     }
 
     public static List<User> getAll() {
