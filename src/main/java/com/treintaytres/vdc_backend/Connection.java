@@ -1,13 +1,11 @@
 package com.treintaytres.vdc_backend;
 
 import com.treintaytres.vdc_backend.model.*;
-import com.treintaytres.vdc_backend.model.String;
+import com.treintaytres.vdc_backend.model.InstrumentString;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
-import java.io.File;
 
 public class Connection {
     private static Configuration configuration = null;
@@ -17,15 +15,16 @@ public class Connection {
 
     private static void init() {
         if (configuration == null) {
-            configuration = new Configuration().configure(new File("hibernate.cfg.xml"));
+            configuration = new Configuration().configure();
             configuration.addAnnotatedClass(Event.class);
             configuration.addAnnotatedClass(Instrument.class);
-            configuration.addAnnotatedClass(String.class);
+            configuration.addAnnotatedClass(InstrumentString.class);
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(UserEvent.class);
             configuration.addAnnotatedClass(UserEventId.class);
             configuration.addAnnotatedClass(UserInstrument.class);
             configuration.addAnnotatedClass(UserInstrumentId.class);
+            configuration.addAnnotatedClass(New.class);
             sessionFactory = configuration.buildSessionFactory();
         }
     }

@@ -17,9 +17,14 @@ public class Utils {
         g.drawImage(profileImage, 0, 0,200,200, null);
         g.dispose();
 
+        File directory = new File("/images/users/");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         File outputFile = new File("/images/users/"+email+".jpg");
         ImageIO.write(scaleImage, "jpg", outputFile);
 
-        return outputFile.getAbsolutePath();
+        return email+".jpg";
     }
 }

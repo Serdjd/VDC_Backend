@@ -1,7 +1,6 @@
 package com.treintaytres.vdc_backend.service;
 
 import com.treintaytres.vdc_backend.dao.UserDao;
-import com.treintaytres.vdc_backend.model.Instrument;
 import com.treintaytres.vdc_backend.model.User;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +8,20 @@ import java.util.List;
 
 @Service
 public class UserService {
-    public void add(
+    public int add(
+            String email
+    ) {
+        return UserDao.add(email);
+    }
+
+    public boolean update(
+            int id,
             String username,
-            String email,
             int primaryInstrumentId,
-            Instrument[] instrumentIds,
+            List<Integer> instrumentIds,
             String profileImagePath
     ) {
-        UserDao.add(username, email, primaryInstrumentId, instrumentIds, profileImagePath);
+        return UserDao.update(id, username, primaryInstrumentId, instrumentIds, profileImagePath);
     }
 
     public void updatePermissions(

@@ -15,14 +15,14 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "username", nullable = false, length = 100)
+    @Column(name = "username", length = 100)
     private String username;
 
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
     @Lob
-    @Column(name = "profile_image_url", nullable = false)
+    @Column(name = "profile_image_url")
     private String profileImageUrl;
 
     @ColumnDefault("0")
@@ -33,8 +33,8 @@ public class User {
     @Column(name = "pertenece_junta")
     private Boolean perteneceJunta;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "primary_instrument", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "primary_instrument")
     private Instrument primaryInstrument;
 
     @OneToMany(mappedBy = "idUser")
@@ -42,6 +42,17 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Instrument> instruments = new LinkedHashSet<>();
+
+    @Column(name = "validado", nullable = false)
+    private Boolean validado = false;
+
+    public Boolean getValidado() {
+        return validado;
+    }
+
+    public void setValidado(Boolean validado) {
+        this.validado = validado;
+    }
 
 
     public User() {}
@@ -58,6 +69,9 @@ public class User {
         this.profileImageUrl = profileImageUrl;
         this.primaryInstrument = primaryInstrument;
         this.instruments = instruments;
+        this.rol = 0;
+        this.perteneceJunta = false;
+        this.validado = false;
     }
 
     public Integer getId() {

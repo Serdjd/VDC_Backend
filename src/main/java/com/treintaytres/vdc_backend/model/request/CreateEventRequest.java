@@ -5,7 +5,7 @@ import java.util.List;
 public class CreateEventRequest {
 
     private int id;
-    private String type;
+    private Integer type;
     private String title;
     private String comments;
     private String location;
@@ -13,7 +13,7 @@ public class CreateEventRequest {
 
     public CreateEventRequest() {}
 
-    public CreateEventRequest(String type, String title, String comments, String location, List<Integer> userIds) {
+    public CreateEventRequest(Integer type, String title, String comments, String location, List<Integer> userIds) {
         this.type = type;
         this.title = title;
         this.comments = comments;
@@ -21,7 +21,7 @@ public class CreateEventRequest {
         this.userIds = userIds;
     }
 
-    public CreateEventRequest(int id,String type, String title, String comments, String location, List<Integer> userIds) {
+    public CreateEventRequest(int id,Integer type, String title, String comments, String location, List<Integer> userIds) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -38,11 +38,11 @@ public class CreateEventRequest {
         this.id = id;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

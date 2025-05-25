@@ -1,14 +1,14 @@
 package com.treintaytres.vdc_backend.model.request;
 
-import com.treintaytres.vdc_backend.model.Instrument;
+import java.util.List;
 
-public class CreateUserRequest {
+public class UpdateUserRequest {
 
     private String username;
     private String email;
+    private int id;
     private int primaryInstrumentId;
-    private Instrument[] instrumentIds;
-    private byte[] profileImage;
+    private List<Integer> instrumentIds;
 
     public String getUsername() {
         return username;
@@ -26,6 +26,14 @@ public class CreateUserRequest {
         this.email = email;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getPrimaryInstrumentId() {
         return primaryInstrumentId;
     }
@@ -34,19 +42,11 @@ public class CreateUserRequest {
         this.primaryInstrumentId = primaryInstrumentId;
     }
 
-    public Instrument[] getInstrumentIds() {
+    public List<Integer> getInstrumentIds() {
         return instrumentIds;
     }
 
-    public void setInstrumentIds(Instrument[] instrumentIds) {
+    public void setInstrumentIds(List<Integer> instrumentIds) {
         this.instrumentIds = instrumentIds;
-    }
-
-    public byte[] getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(byte[] profileImage) {
-        this.profileImage = profileImage;
     }
 }
