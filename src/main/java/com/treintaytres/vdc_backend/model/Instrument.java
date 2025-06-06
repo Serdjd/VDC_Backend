@@ -17,16 +17,13 @@ public class Instrument {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "string", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "string_id", nullable = false, referencedColumnName = "id")
     private InstrumentString instrumentString;
 
     @OneToMany(mappedBy = "primaryInstrument")
     private Set<User> users_primary = new LinkedHashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "USER_INSTRUMENT",
-            joinColumns = @JoinColumn(name = "id_instrument"),
-            inverseJoinColumns = @JoinColumn(name = "id_user"))
+    @ManyToMany(mappedBy = "instruments", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<User> users = new LinkedHashSet<>();
 
     @Lob

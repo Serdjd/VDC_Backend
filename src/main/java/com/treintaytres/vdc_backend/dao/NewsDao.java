@@ -1,14 +1,19 @@
 package com.treintaytres.vdc_backend.dao;
 
-import com.treintaytres.vdc_backend.Connection;
 import com.treintaytres.vdc_backend.model.New;
-import org.hibernate.Session;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class NewsDao {
-    public static List<New> getAllNews() {
-        Session session = Connection.getSession();
+
+    @PersistenceContext
+    private EntityManager session;
+
+    public List<New> getAllNews() {
         return session.createQuery("from New", New.class).getResultList();
     }
 }

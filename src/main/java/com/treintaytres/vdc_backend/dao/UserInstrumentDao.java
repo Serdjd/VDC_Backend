@@ -1,37 +1,19 @@
 package com.treintaytres.vdc_backend.dao;
 
-import com.treintaytres.vdc_backend.Connection;
 import com.treintaytres.vdc_backend.model.Instrument;
 import com.treintaytres.vdc_backend.model.User;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 
+@Repository
 public class UserInstrumentDao {
 
-    public static List<Instrument> update(
-            int userId,
-            List<Integer> newInstrumentIds
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
-        try {
-            User user = session.get(User.class,userId);
+    @PersistenceContext
+    private EntityManager session;
 
-            List<Instrument> instruments = session.createQuery("FROM Instrument where id IN :ids", Instrument.class)
-                    .setParameter("ids",newInstrumentIds)
-                    .getResultList();
-
-            user.setInstruments(new HashSet<>(instruments));
-            tx.commit();
-
-            return instruments;
-        } catch (Exception e) {
-            tx.rollback();
-            System.err.println(e.getMessage());
-            return null;
-        }
-    }
 }

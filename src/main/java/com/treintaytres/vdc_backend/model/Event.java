@@ -38,7 +38,7 @@ public class Event {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "idEvent")
+    @OneToMany(mappedBy = "idEvent", cascade = CascadeType.ALL)
     private Set<UserEvent> userEvents = new LinkedHashSet<>();
 
     @ColumnDefault("0")
@@ -55,11 +55,12 @@ public class Event {
 
 
     public Event() {}
-    public Event(Integer type, String title, String comments, String location) {
+    public Event(Integer type, String title, String comments, String location, Instant date) {
         this.type = type;
         this.title = title;
         this.comments = comments;
         this.location = location;
+        this.date = date;
     }
 
     @PostUpdate

@@ -1,56 +1,59 @@
 package com.treintaytres.vdc_backend.dao;
 
-import com.treintaytres.vdc_backend.Connection;
 import com.treintaytres.vdc_backend.model.Event;
 import com.treintaytres.vdc_backend.model.User;
 import com.treintaytres.vdc_backend.model.UserEvent;
 import com.treintaytres.vdc_backend.model.UserEventId;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import com.treintaytres.vdc_backend.model.request.RollCallRequest;
+import com.treintaytres.vdc_backend.response.bandInfo.Member;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Repository
 public class UserEventDao {
-    public static void rollCall(int eventId,Map<Integer,Boolean> attendance) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+
+    @PersistenceContext
+    private EntityManager session;
+
+    @Transactional
+    public void rollCall(int id, List<RollCallRequest> requests) throws RuntimeException {
         try {
-            attendance.forEach((userId,state)->{
-                UserEvent ue = session.get(UserEvent.class, new UserEventId(eventId,userId));
-                ue.setAttended(state);
+            requests.forEach(member-> {
+                UserEvent ue = session.find(UserEvent.class, new UserEventId(id,member.getId()));
+                ue.setAttended(member.getAttendance());
             });
-            tx.commit();
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public static List<User> getUserOfEvent(int eventId) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    @Transactional
+    public List<User> getUserOfEvent(int eventId) {
         try {
-            Event event = session.get(Event.class, eventId);
+            Event event = session.find(Event.class, eventId);
             return event.getUserEvents().stream().map(UserEvent::getIdUser).collect(Collectors.toList());
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    public static void changeAttendance(int userId,int eventId, boolean attendance) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    @Transactional
+    public void changeAttendance(int userId,int eventId, boolean attendance) {
         try {
-            UserEvent ue = session.get(UserEvent.class,new UserEventId(eventId,userId));
+            UserEvent ue = session.find(UserEvent.class,new UserEventId(eventId,userId));
             ue.setWillAttend(attendance);
-            tx.commit();
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

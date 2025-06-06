@@ -10,16 +10,16 @@ public class UserInstrument {
 
     @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "id_user", nullable = false)
+    private User userId;
 
     @MapsId("instrumentId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "instrument_id", nullable = false)
-    private Instrument instrument;
+    @JoinColumn(name = "id_instrument", nullable = false)
+    private Instrument instrumentId;
 
     public UserInstrument() {}
-    public UserInstrument(User user, Instrument instrument) {}
+    public UserInstrument(User userId, Instrument instrumentId) {}
 
     public UserInstrumentId getId() {
         return id;
@@ -29,20 +29,20 @@ public class UserInstrument {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(User user) {
+        this.userId = user;
     }
 
-    public Instrument getInstrument() {
-        return instrument;
+    public Instrument getInstrumentId() {
+        return instrumentId;
     }
 
-    public void setInstrument(Instrument instrument) {
-        this.instrument = instrument;
+    public void setInstrumentId(Instrument instrument) {
+        this.instrumentId = instrument;
     }
 
 }

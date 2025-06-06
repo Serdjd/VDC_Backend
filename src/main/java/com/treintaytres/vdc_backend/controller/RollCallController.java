@@ -2,13 +2,11 @@ package com.treintaytres.vdc_backend.controller;
 
 import com.treintaytres.vdc_backend.mapper.UserMapper;
 import com.treintaytres.vdc_backend.model.User;
+import com.treintaytres.vdc_backend.model.request.RollCallRequest;
 import com.treintaytres.vdc_backend.response.bandInfo.Member;
 import com.treintaytres.vdc_backend.service.RollCallService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +29,18 @@ public class RollCallController {
         if (users == null || users.isEmpty()) return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(userMapper.toMembers(users));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateRollCall(
+            @PathVariable int id,
+            @RequestBody List<RollCallRequest> requests
+    ) {
+        try {
+            rollCallService.updateUsersAttendance(id, requests);
+            return ResponseEntity.ok("success");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

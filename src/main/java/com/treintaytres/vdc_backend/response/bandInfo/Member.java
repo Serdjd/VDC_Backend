@@ -8,7 +8,7 @@ public class Member {
     private String name;
     private String isAdmin;
     public boolean perteneceJunta;
-    private boolean attendance;
+    private Boolean attendance;
     private List<Instrument> instruments;
 
     public Integer getId() {
@@ -51,11 +51,11 @@ public class Member {
         this.perteneceJunta = perteneceJunta;
     }
 
-    public boolean isAttendance() {
+    public Boolean isAttendance() {
         return attendance;
     }
 
-    public void setAttendance(boolean attendance) {
+    public void setAttendance(Boolean attendance) {
         this.attendance = attendance;
     }
 
