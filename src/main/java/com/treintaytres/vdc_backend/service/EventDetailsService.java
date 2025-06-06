@@ -11,10 +11,17 @@ import java.util.List;
 
 @Service
 public class EventDetailsService {
+
+    private final EventDao eventDao;
+
+    public EventDetailsService(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
+
     public List<UserWithString> getUsers(int id) {
-        return EventDao.getEventUsersWithString(id);
+        return eventDao.getEventUsersWithString(id);
     }
     public Event getEvent(int id) {
-        return EventDao.getEvent(id);
+        return eventDao.getEvent(id);
     }
 }

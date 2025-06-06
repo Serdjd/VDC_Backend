@@ -8,7 +8,7 @@ public class EventResponse {
     private String title;
     private Instant date;
     private String location;
-    private boolean confirmationState;
+    private Boolean confirmationState;
 
     public int getId() {
         return id;
@@ -50,11 +50,11 @@ public class EventResponse {
         this.location = location;
     }
 
-    public boolean isConfirmationState() {
+    public Boolean isConfirmationState() {
         return confirmationState;
     }
 
-    public void setConfirmationState(boolean confirmationState) {
+    public void setConfirmationState(Boolean confirmationState) {
         this.confirmationState = confirmationState;
     }
 }

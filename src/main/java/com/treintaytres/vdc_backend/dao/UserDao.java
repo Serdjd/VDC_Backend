@@ -1,157 +1,170 @@
 package com.treintaytres.vdc_backend.dao;
 
-import com.treintaytres.vdc_backend.Connection;
 import com.treintaytres.vdc_backend.model.Instrument;
 import com.treintaytres.vdc_backend.model.User;
-import com.treintaytres.vdc_backend.model.UserWithString;
 import com.treintaytres.vdc_backend.utils.Constants;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-
+@Repository
 public class UserDao {
 
-    public static int add(
-        String email
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
-        try {
+    @PersistenceContext
+    private EntityManager session;
 
+    @Transactional
+    public int add(
+        String email
+    ) throws RuntimeException {
+        try {
             User user = new User();
             user.setEmail(email);
             session.persist(user);
             int id = user.getId();
-            tx.commit();
             return id;
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
-            return -1;
+            throw new RuntimeException(e);
         }
     }
-
-    public static boolean update(
+    @Transactional
+    public boolean update(
             int id,
             String username,
             int primaryInstrumentId,
             List<Integer> instrumentIds,
             String profileImagePath
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    ) throws RuntimeException {
         try {
-
             List<Instrument> instruments = session.createQuery("FROM Instrument where id IN :ids",Instrument.class)
                     .setParameter("ids",instrumentIds)
                     .getResultList();
 
-            User user = session.get(User.class,id);
+            User user = session.find(User.class,id);
             user.setUsername(username);
             user.setProfileImageUrl(profileImagePath);
             user.setRol(0);
             user.setPerteneceJunta(false);
-            user.setPrimaryInstrument(session.get(Instrument.class,primaryInstrumentId));
+            user.setPrimaryInstrument(session.find(Instrument.class,primaryInstrumentId));
             user.setInstruments(new HashSet<>(instruments));
-
-            tx.commit();
             return true;
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
-
-    public static void updatePermissions(
+    @Transactional
+    public void updatePermissions(
             int id,
             int permissions
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    ) throws RuntimeException {
         try {
-            User user = session.get(User.class,id);
+            User user = session.find(User.class,id);
             user.setRol(permissions);
-            tx.commit();
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public static void updatePrimaryInstrument(
+    @Transactional
+    public void updateInstruments(
             int id,
-            int primaryInstrumentId
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+            int primaryInstrumentId,
+            List<Integer> instrumentIds
+    ) throws RuntimeException {
         try {
-            User user = session.get(User.class,id);
-            user.setPrimaryInstrument(session.get(Instrument.class,primaryInstrumentId));
-            tx.commit();
+            User user = session.find(User.class,id);
+            user.setPrimaryInstrument(session.find(Instrument.class,primaryInstrumentId));
+            List<Instrument> instruments = new ArrayList<>();
+            instrumentIds.forEach(instrumentId -> {
+                instruments.add(session.find(Instrument.class,instrumentId));
+            });
+            user.setInstruments(new HashSet<>(instruments));
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
-
-    public static User get(int id) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    @Transactional
+    public User get(int id) throws RuntimeException {
         try {
-            User user = session.get(User.class,id);
-            tx.commit();
+            User user = session.find(User.class,id);
             return user;
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    public static Boolean isAdmin(int id) {
-        Session session = Connection.getSession();
-        User user = session.get(User.class,id);
+    @Transactional
+    public User get(String email) throws RuntimeException {
+        try {
+            User user = session
+                    .createQuery("from User where email = :email",User.class)
+                    .setParameter("email",email)
+                    .getSingleResult();
+            return user;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Boolean isAdmin(int id) {
+        User user = session.find(User.class,id);
         if (user == null) return null;
         return user.getRol() == Constants.ADMIN;
     }
 
-    public static List<User> getAll() {
-        Session session = Connection.getSession();
-        return session.createQuery("FROM User",User.class).getResultList();
+    public List<User> getAll() {
+        return session.createQuery("FROM User where profileImageUrl is not null and primaryInstrument is not null and validado = true ",User.class).getResultList();
     }
 
-    public static void updatePerteneceJunta(int id) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    @Transactional
+    public void updatePerteneceJunta(int id) throws RuntimeException {
         try {
-            User user = session.get(User.class,id);
+            User user = session.find(User.class,id);
             user.setPerteneceJunta(!user.getPerteneceJunta());
-            tx.commit();
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public static void updateProfileImageUrl(
+    @Transactional
+    public void updateProfileImageUrl(
             int id,
             String profileImageUrl
-    ) {
-        Session session = Connection.getSession();
-        Transaction tx = session.beginTransaction();
+    ) throws RuntimeException {
         try {
-            User user = session.get(User.class,id);
+            User user = session.find(User.class,id);
             user.setProfileImageUrl(profileImageUrl);
-            tx.commit();
         } catch (Exception e) {
-            tx.rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
+    @Transactional
+    public boolean updateValidation(
+            int id,
+            boolean validation
+    ) throws RuntimeException {
+        try {
+            User user = session.find(User.class,id);
+            user.setValidado(validation);
+            return true;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 }

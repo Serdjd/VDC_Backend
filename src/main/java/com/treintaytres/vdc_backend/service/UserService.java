@@ -8,10 +8,21 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     public int add(
             String email
     ) {
-        return UserDao.add(email);
+        try {
+            return userDao.add(email);
+        } catch (RuntimeException e) {
+            return -1;
+        }
     }
 
     public boolean update(
@@ -21,39 +32,75 @@ public class UserService {
             List<Integer> instrumentIds,
             String profileImagePath
     ) {
-        return UserDao.update(id, username, primaryInstrumentId, instrumentIds, profileImagePath);
+        try {
+            return userDao.update(id, username, primaryInstrumentId, instrumentIds, profileImagePath);
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public void updatePermissions(
             int id,
             int permissions
     ) {
-        UserDao.updatePermissions(id, permissions);
+        try {
+            userDao.updatePermissions(id, permissions);
+        } catch (RuntimeException ignored) {}
     }
 
-    public void updatePrimaryInstrument(
+    public void updateInstruments(
             int id,
-            int primaryInstrumentId
+            int primaryInstrumentId,
+            List<Integer> instrumentIds
     ) {
-        UserDao.updatePrimaryInstrument(id, primaryInstrumentId);
+        try {
+            userDao.updateInstruments(id, primaryInstrumentId, instrumentIds);
+        } catch (RuntimeException ignored) {}
     }
 
     public User get(int id) {
-        return UserDao.get(id);
+        try {
+            return userDao.get(id);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    public User get(String email) {
+        try {
+            return userDao.get(email);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public List<User> getAll() {
-        return UserDao.getAll();
+        return userDao.getAll();
     }
 
     public void updatePerteneceJunta(int id) {
-        UserDao.updatePerteneceJunta(id);
+        try{
+            userDao.updatePerteneceJunta(id);
+        } catch (RuntimeException ignored) {}
     }
 
     public void updateProfileImageUrl(
             int id,
             String profileImageUrl
     ) {
-        UserDao.updateProfileImageUrl(id, profileImageUrl);
+        try{
+            userDao.updateProfileImageUrl(id, profileImageUrl);
+        } catch (RuntimeException ignored) {}
+    }
+
+    public boolean updateValidation(
+            int id,
+            boolean validation
+    ) {
+        try {
+            return userDao.updateValidation(id, validation);
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 }

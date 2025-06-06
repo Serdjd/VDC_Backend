@@ -20,7 +20,8 @@ public class BandController {
     private final UserMapper userMapper;
     private BandService bandService;
 
-    public BandController(BandService bandService, UserMapper userMapper) {this.bandService = bandService;
+    public BandController(BandService bandService, UserMapper userMapper) {
+        this.bandService = bandService;
         this.userMapper = userMapper;
     }
 
