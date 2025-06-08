@@ -27,10 +27,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> users = userService.getAll();
-        if (users == null || users.isEmpty()) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<Member>> getUsers(@RequestParam String status) {
+        if (status == null || status.isEmpty()) {
+            List<User> users = userService.getAll();
+            if (users == null || users.isEmpty()) return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(userMapper.toMembers(users));
+        }
+        List<User> users = userService.getAllNotValidate();
+        if (users == null) return ResponseEntity.badRequest().build();
+        if (users.isEmpty()) return ResponseEntity.noContent().build();
+        List<Member> members = users.stream().map(u -> new Member(u.getId(),u.getEmail())).toList();
+        return ResponseEntity.ok(members);
     }
 
     @GetMapping("/{id}")
@@ -38,6 +45,13 @@ public class UserController {
         User user = userService.get(id);
         if (user == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(userMapper.toMember(user));
+    }
+
+    @GetMapping("/id/{email}")
+    public ResponseEntity<Integer> getUser(@PathVariable String email) {
+        User user = userService.get(email);
+        if (user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user.getId());
     }
 
     @PostMapping
@@ -66,12 +80,13 @@ public class UserController {
                     request.getInstrumentIds(),
                     url
             );
+            userService.addUserEvents(id);
             if (success) {
                 return ResponseEntity.ok(url);
             } else {
                 return ResponseEntity.badRequest().build();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
@@ -102,13 +117,14 @@ public class UserController {
     @PutMapping("/profile/{id}")
     public ResponseEntity<String> updateProfileImage(
             @PathVariable int id,
-            @RequestPart("image") MultipartFile image,
-            @RequestPart("data")  EmailUserRequest emailUserRequest
+            @RequestPart("image") MultipartFile image
     ) {
         try {
+            User user = userService.get(id);
+
             String path = Utils.saveImage(
                     image.getBytes(),
-                    emailUserRequest.getEmail()
+                    user.getEmail()
             );
             userService.updateProfileImageUrl(
                     id,

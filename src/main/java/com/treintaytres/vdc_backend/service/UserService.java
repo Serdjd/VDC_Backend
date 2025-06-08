@@ -1,6 +1,7 @@
 package com.treintaytres.vdc_backend.service;
 
 import com.treintaytres.vdc_backend.dao.UserDao;
+import com.treintaytres.vdc_backend.dao.UserEventDao;
 import com.treintaytres.vdc_backend.model.User;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,11 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao;
+    private final UserEventDao userEventDao;
 
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, UserEventDao userEventDao) {
         this.userDao = userDao;
+        this.userEventDao = userEventDao;
     }
 
     public int add(
@@ -37,6 +40,10 @@ public class UserService {
         } catch (RuntimeException e) {
             return false;
         }
+    }
+
+    public void addUserEvents(int userId) throws Exception {
+        userEventDao.addUser(userId);
     }
 
     public void updatePermissions(
@@ -76,6 +83,10 @@ public class UserService {
 
     public List<User> getAll() {
         return userDao.getAll();
+    }
+
+    public List<User> getAllNotValidate() {
+        return userDao.getAllNotValidate();
     }
 
     public void updatePerteneceJunta(int id) {

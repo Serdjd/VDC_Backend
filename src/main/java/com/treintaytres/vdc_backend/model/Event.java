@@ -45,6 +45,18 @@ public class Event {
     @Column(name = "roll_call_maked", nullable = false)
     private Boolean rollCallMaked = false;
 
+    @Lob
+    @Column(name = "instrument_strings")
+    private String instrumentStrings;
+
+    public String getInstrumentStrings() {
+        return instrumentStrings;
+    }
+
+    public void setInstrumentStrings(String instrumentStrings) {
+        this.instrumentStrings = instrumentStrings;
+    }
+
     public Boolean getRollCallMaked() {
         return rollCallMaked;
     }
@@ -55,12 +67,13 @@ public class Event {
 
 
     public Event() {}
-    public Event(Integer type, String title, String comments, String location, Instant date) {
+    public Event(Integer type, String title, String comments, String location, Instant date, String instrumentStrings) {
         this.type = type;
         this.title = title;
         this.comments = comments;
         this.location = location;
         this.date = date;
+        this.instrumentStrings = instrumentStrings;
     }
 
     @PostUpdate

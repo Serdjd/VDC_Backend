@@ -128,6 +128,12 @@ public class UserDao {
         return session.createQuery("FROM User where profileImageUrl is not null and primaryInstrument is not null and validado = true ",User.class).getResultList();
     }
 
+    public List<User> getAllNotValidate() {
+        return session.createQuery("FROM User where validado = false",User.class).getResultList();
+    }
+
+
+
     @Transactional
     public void updatePerteneceJunta(int id) throws RuntimeException {
         try {
@@ -159,8 +165,12 @@ public class UserDao {
             boolean validation
     ) throws RuntimeException {
         try {
-            User user = session.find(User.class,id);
-            user.setValidado(validation);
+            if (validation) {
+                User user = session.find(User.class,id);
+                user.setValidado(true);
+            } else {
+                session.remove(session.find(User.class,id));
+            }
             return true;
         } catch (Exception e) {
             System.err.println(e.getMessage());
