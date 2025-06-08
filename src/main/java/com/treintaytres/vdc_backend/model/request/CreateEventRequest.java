@@ -9,25 +9,31 @@ public class CreateEventRequest {
     private String title;
     private String comments;
     private String location;
-    private List<Integer> userIds;
+    private String date;
+    private String time;
+    private List<Integer> instrumentStringIds;
 
     public CreateEventRequest() {}
 
-    public CreateEventRequest(Integer type, String title, String comments, String location, List<Integer> userIds) {
+    public CreateEventRequest(Integer type, String title, String comments, String location, String date, String time, List<Integer> instrumentStringIds) {
         this.type = type;
         this.title = title;
         this.comments = comments;
         this.location = location;
-        this.userIds = userIds;
+        this.date = date;
+        this.time = time;
+        this.instrumentStringIds = instrumentStringIds;
     }
 
-    public CreateEventRequest(int id,Integer type, String title, String comments, String location, List<Integer> userIds) {
+    public CreateEventRequest(int id,Integer type, String title, String comments, String location, String date, String time, List<Integer> instrumentStringIds) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.comments = comments;
         this.location = location;
-        this.userIds = userIds;
+        this.date = date;
+        this.time = time;
+        this.instrumentStringIds = instrumentStringIds;
     }
 
     public int getId() {
@@ -70,11 +76,27 @@ public class CreateEventRequest {
         this.location = location;
     }
 
-    public List<Integer> getUserIds() {
-        return userIds;
+    public String getDate() {
+        return date;
     }
 
-    public void setUserIds(List<Integer> userIds) {
-        this.userIds = userIds;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public List<Integer> getInstrumentStringIds() {
+        return instrumentStringIds;
+    }
+
+    public void setInstrumentStringIds(List<Integer> instrumentStringIds) {
+        this.instrumentStringIds = instrumentStringIds;
     }
 }

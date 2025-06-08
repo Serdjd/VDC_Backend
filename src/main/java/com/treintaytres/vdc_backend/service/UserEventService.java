@@ -10,15 +10,24 @@ import java.util.Map;
 @Service
 public class UserEventService {
 
-    public void rollCall(int eventId, Map<Integer,Boolean> attendance) {
-        UserEventDao.rollCall(eventId, attendance);
+    private final UserEventDao userEventDao;
+
+    public UserEventService(UserEventDao userEventDao) {
+        this.userEventDao = userEventDao;
     }
 
+
     public List<User> getUserOfEvent(int eventId) {
-        return UserEventDao.getUserOfEvent(eventId);
+        try {
+            return userEventDao.getUserOfEvent(eventId);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public void changeAttendance(int userId,int eventId, boolean attendance) {
-        UserEventDao.changeAttendance(userId, eventId, attendance);
+        try {
+            userEventDao.changeAttendance(userId,eventId,attendance);
+        } catch (RuntimeException ignored) {}
     }
 }

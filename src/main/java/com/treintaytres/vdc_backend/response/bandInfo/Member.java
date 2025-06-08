@@ -4,12 +4,20 @@ import java.util.List;
 
 public class Member {
     private Integer id;
+    private String email;
     private String url;
     private String name;
     private String isAdmin;
     public boolean perteneceJunta;
-    private boolean attendance;
+    private Boolean attendance;
     private List<Instrument> instruments;
+
+    public Member() {}
+
+    public Member(Integer id, String email) {
+        this.id = id;
+        this.email = email;
+    }
 
     public Integer getId() {
         return id;
@@ -17,6 +25,14 @@ public class Member {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUrl() {
@@ -51,11 +67,11 @@ public class Member {
         this.perteneceJunta = perteneceJunta;
     }
 
-    public boolean isAttendance() {
+    public Boolean isAttendance() {
         return attendance;
     }
 
-    public void setAttendance(boolean attendance) {
+    public void setAttendance(Boolean attendance) {
         this.attendance = attendance;
     }
 

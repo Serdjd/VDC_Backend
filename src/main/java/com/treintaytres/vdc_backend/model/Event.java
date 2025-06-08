@@ -38,12 +38,24 @@ public class Event {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "idEvent")
+    @OneToMany(mappedBy = "idEvent", cascade = CascadeType.ALL)
     private Set<UserEvent> userEvents = new LinkedHashSet<>();
 
     @ColumnDefault("0")
     @Column(name = "roll_call_maked", nullable = false)
     private Boolean rollCallMaked = false;
+
+    @Lob
+    @Column(name = "instrument_strings")
+    private String instrumentStrings;
+
+    public String getInstrumentStrings() {
+        return instrumentStrings;
+    }
+
+    public void setInstrumentStrings(String instrumentStrings) {
+        this.instrumentStrings = instrumentStrings;
+    }
 
     public Boolean getRollCallMaked() {
         return rollCallMaked;
@@ -55,11 +67,13 @@ public class Event {
 
 
     public Event() {}
-    public Event(Integer type, String title, String comments, String location) {
+    public Event(Integer type, String title, String comments, String location, Instant date, String instrumentStrings) {
         this.type = type;
         this.title = title;
         this.comments = comments;
         this.location = location;
+        this.date = date;
+        this.instrumentStrings = instrumentStrings;
     }
 
     @PostUpdate

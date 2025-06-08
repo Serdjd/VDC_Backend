@@ -4,6 +4,7 @@ import com.treintaytres.vdc_backend.mapper.UserMapper;
 import com.treintaytres.vdc_backend.model.New;
 import com.treintaytres.vdc_backend.model.User;
 import com.treintaytres.vdc_backend.response.bandInfo.BandInfoResponse;
+import com.treintaytres.vdc_backend.response.bandInfo.Instrument;
 import com.treintaytres.vdc_backend.response.bandInfo.Member;
 import com.treintaytres.vdc_backend.response.profile.ProfileResponse;
 import com.treintaytres.vdc_backend.service.BandService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,8 +36,14 @@ public class ProfileController {
         if (user == null) return ResponseEntity.badRequest().build();
 
         ProfileResponse profileResponse = new ProfileResponse();
+
+        profileResponse.setName(user.getUsername());
         profileResponse.setUrl(user.getProfileImageUrl());
-        profileResponse.setInstruments(userMapper.toInstruments(user.getInstruments().stream().toList()));
+
+        List<Instrument> instruments = new ArrayList<>(userMapper.toInstruments(user.getInstruments().stream().toList()));
+        instruments.addFirst(userMapper.toInstrument(user.getPrimaryInstrument()));
+
+        profileResponse.setInstruments(instruments);
         profileResponse.setStats(profileService.getAllUserStadistics(id));
         return ResponseEntity.ok(profileResponse);
     }

@@ -37,10 +37,13 @@ public class User {
     @JoinColumn(name = "primary_instrument")
     private Instrument primaryInstrument;
 
-    @OneToMany(mappedBy = "idUser")
+    @OneToMany(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<com.treintaytres.vdc_backend.model.UserEvent> userEvents = new LinkedHashSet<>();
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "USER_INSTRUMENT",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_instrument"))
     private Set<Instrument> instruments = new LinkedHashSet<>();
 
     @Column(name = "validado", nullable = false)

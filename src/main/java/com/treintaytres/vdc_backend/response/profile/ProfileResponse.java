@@ -6,9 +6,18 @@ import com.treintaytres.vdc_backend.response.bandInfo.Instrument;
 import java.util.List;
 
 public class ProfileResponse {
+    private String name;
     private String url;
     private List<Instrument> instruments;
     private List<UserStadistics> stats;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getUrl() {
         return url;

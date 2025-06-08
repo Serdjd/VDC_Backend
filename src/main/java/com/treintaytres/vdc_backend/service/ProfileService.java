@@ -11,10 +11,26 @@ import java.util.List;
 
 @Service
 public class ProfileService {
+
+    private final UserDao userDao;
+    private final EventDao eventDao;
+
+    public ProfileService(
+            UserDao userDao,
+            EventDao eventDao
+    ) {
+        this.userDao = userDao;
+        this.eventDao = eventDao;
+    }
+
     public User getProfile(int id) {
-        return UserDao.get(id);
+        try {
+            return userDao.get(id);
+        } catch (Exception e) {
+            return null;
+        }
     }
     public List<UserStadistics> getAllUserStadistics(int id) {
-        return EventDao.getUserStadistics(id);
+        return eventDao.getUserStadistics(id);
     }
 }

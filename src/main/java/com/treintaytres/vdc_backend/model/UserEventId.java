@@ -16,7 +16,10 @@ public class UserEventId implements java.io.Serializable {
     private Integer idUser;
 
     public UserEventId() {}
-    public UserEventId(Integer idEvent, Integer idUser) {}
+    public UserEventId(Integer idEvent, Integer idUser) {
+        this.idEvent = idEvent;
+        this.idUser = idUser;
+    }
 
     public Integer getIdEvent() {
         return idEvent;
