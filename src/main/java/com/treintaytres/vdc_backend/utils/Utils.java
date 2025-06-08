@@ -25,7 +25,7 @@ public class Utils {
         File outputFile = new File("/images/users/"+email+".png");
         ImageIO.write(scaleImage, "png", outputFile);
 
-        return email+".png";
+        return email+".png?hash="+System.currentTimeMillis();
     }
 
     public static String saveImage(byte[] image, String name, String type) throws IOException {
@@ -49,7 +49,7 @@ public class Utils {
 
         System.out.println(outputFile.exists());
 
-        return name+".png";
+        return name+".png?hash="+System.currentTimeMillis();
     }
 
 }

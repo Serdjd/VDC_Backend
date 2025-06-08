@@ -33,7 +33,8 @@ public class EventDao {
     public List<EventWithAttendance> getFutureEvents(int id) {
         return session.createQuery(
                         "select e, ue.willAttend from UserEvent ue join Event e on ue.id.idEvent = e.id " +
-                                "where ue.id.idUser = :id and e.date > :now",
+                                "where ue.id.idUser = :id and e.date > :now " +
+                                "order by e.date asc",
                         EventWithAttendance.class
                 )
                 .setParameter("id", id)
@@ -44,7 +45,8 @@ public class EventDao {
     public List<EventWithAttendance> getPastEvents(int id) {
         return session.createQuery(
                         "select e, ue.willAttend from UserEvent ue join Event e on ue.id.idEvent = e.id " +
-                                "where ue.id.idUser = :id and e.date < :now",
+                                "where ue.id.idUser = :id and e.date < :now " +
+                                "order by e.date desc",
                         EventWithAttendance.class
                 )
                 .setParameter("id", id)
@@ -79,7 +81,7 @@ public class EventDao {
             List<Integer> instrumentStringIds
     ) throws RuntimeException {
         try {
-            Event event = new Event(type,title,comments,location,date);
+            Event event = new Event(type,title,comments,location,date, instrumentStringIds.stream().map(Object::toString).collect(Collectors.joining()));
             instrumentStringIds.forEach(System.out::println);
             session.persist(event);
             session.flush();
@@ -89,7 +91,8 @@ public class EventDao {
                             "from User u " +
                             "join Instrument i " +
                             "on i.instrumentString.id in (:ids) and " +
-                            "(u.primaryInstrument.id = i.id or i member of u.instruments)"
+                            "(u.primaryInstrument.id = i.id or i member of u.instruments) " +
+                            "and u.validado = true"
                     ,Integer.class
             ).setParameter("ids", instrumentStringIds)
                     .getResultList()
@@ -130,13 +133,15 @@ public class EventDao {
             event.setComments(comments);
             event.setLocation(location);
             event.setDate(date);
+            event.setInstrumentStrings(instrumentStringIds.stream().map(Object::toString).collect(Collectors.joining()));
 
             Set<UserEvent> users = session.createQuery(
                             "select distinct u.id " +
                                     "from User u " +
                                     "join Instrument i " +
                                     "on i.instrumentString.id in (:ids) and " +
-                                    "(u.primaryInstrument.id = i.id or i member of u.instruments)"
+                                    "(u.primaryInstrument.id = i.id or i member of u.instruments) " +
+                                    "and u.validado = true"
                             ,Integer.class
                     ).setParameter("ids", instrumentStringIds)
                     .getResultList()
@@ -201,7 +206,7 @@ public class EventDao {
         return session.createQuery(
                         "select new com.treintaytres.vdc_backend.model.UserWithString(ue.idUser, ue.willAttend) " +
                                 "from UserEvent ue " +
-                                "where ue.id.idEvent = :id",
+                                "where ue.id.idEvent = :id and ue.idUser.validado = true",
                         UserWithString.class
                 ).setParameter("id",id)
                 .getResultList();
